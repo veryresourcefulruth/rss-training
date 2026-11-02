@@ -263,11 +263,11 @@ async function api(req, env, url) {
   if (p === "/api/admin/export.csv" && method === "GET") {
     const c = await getContent(env);
     const { results: ts } = await env.DB.prepare("SELECT id FROM trainees ORDER BY name COLLATE NOCASE").all();
-    const rows = [["Name", "University", "Started", ...c.modules.map((m, i) => `M${i + 1} ${m.title}`), "Declaration", "Complete"]];
+    const rows = [["Name", "Started", ...c.modules.map((m, i) => `M${i + 1} ${m.title}`), "Declaration", "Complete"]];
     for (const { id } of ts) {
       const t = await traineeView(env, id);
       const done = c.modules.every(m => t.modules[m.id]?.passed) && !!t.declaredAt;
-      rows.push([t.name, t.uni, t.startedAt.slice(0, 10), ...c.modules.map(m => { const r = t.modules[m.id]; return r?.passed ? `Passed ${r.passedAt.slice(0, 10)} (${r.best}%)` : r ? `Not passed (best ${r.best}%)` : ""; }), t.declaredAt ? t.declaredAt.slice(0, 10) : "", done ? "Yes" : "No"]);
+      rows.push([t.name, t.startedAt.slice(0, 10), ...c.modules.map(m => { const r = t.modules[m.id]; return r?.passed ? `Passed ${r.passedAt.slice(0, 10)} (${r.best}%)` : r ? `Not passed (best ${r.best}%)` : ""; }), t.declaredAt ? t.declaredAt.slice(0, 10) : "", done ? "Yes" : "No"]);
     }
     return new Response(rows.map(r => r.map(csvCell).join(",")).join("\r\n"), {
       headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="rss-childcare101-${new Date().toISOString().slice(0, 10)}.csv"`, "cache-control": "no-store" },

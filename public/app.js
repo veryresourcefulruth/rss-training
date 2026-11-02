@@ -59,7 +59,6 @@ function renderLogin() {
     <label class="fld" for="lname">Your full name (first name and surname)<input type="text" id="lname" autocomplete="name" required></label>
     <label class="fld" for="lpin">4-digit PIN<input type="password" id="lpin" class="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" required></label>
     <p class="note">First time? Choose any 4 digits and remember them. You'll use the same name and PIN to carry on later.</p>
-    <label class="fld" for="luni">University and course <span class="note">(first time only, optional)</span><input type="text" id="luni" placeholder="e.g. Keele University, MA Education"></label>
     <p class="err" id="lerr" role="alert"></p>
     <div class="row" style="margin-top:4px"><button class="btn" type="submit" id="lgo">Sign in</button></div>
   </form></div>`;
@@ -68,7 +67,7 @@ function renderLogin() {
   $("#loginForm").onsubmit = async e => {
     e.preventDefault(); const btn = $("#lgo"); btn.disabled = true; $("#lerr").textContent = "";
     try {
-      const r = await api("/api/login", { method: "POST", body: { password: $("#lpw").value, name: $("#lname").value, pin: $("#lpin").value, uni: $("#luni").value } });
+      const r = await api("/api/login", { method: "POST", body: { password: $("#lpw").value, name: $("#lname").value, pin: $("#lpin").value } });
       saveSession({ kind: "trainee", token: r.token }); boot();
     } catch (err) { $("#lerr").textContent = err.message; btn.disabled = false; }
   };
@@ -160,7 +159,7 @@ function renderCert() {
    <div class="row"><button class="btn" type="submit">Sign declaration</button><span class="note" id="dmsg" role="status"></span></div></form></div></div>`;
   const refresh = new Date(me.declaredAt); refresh.setFullYear(refresh.getFullYear() + 1);
   return `<div class="cert"><p class="eyebrow">Resourceful Staffing Support</p><h2>Certificate of completion</h2>
-   <p>This confirms that</p><p class="name">${esc(me.name)}</p>${me.uni ? `<p class="note">${esc(me.uni)}</p>` : ""}
+   <p>This confirms that</p><p class="name">${esc(me.name)}</p>
    <p>has completed <b>RSS Childcare 101</b>, covering EYFS 2025 essentials, safeguarding and child protection, whistleblowing, intimate care, ratios, safer eating, emergencies and quality practice, passing all ${C.modules.length} assessed modules and signing the RSS practitioner declaration on <b>${fmt(me.declaredAt)}</b>.</p>
    <div class="tbl"><table><thead><tr><th>Module</th><th>Score</th><th>Passed</th></tr></thead><tbody>${C.modules.map((m, i) => { const r = me.modules[m.id]; return `<tr><td>${i + 1}. ${esc(m.title)}</td><td class="n">${r.best}%</td><td class="n">${fmt(r.passedAt)}</td></tr>`; }).join("")}</tbody></table></div>
    <p class="note">Induction training only. Does not replace accredited safeguarding (EYFS 2025 Annex C) or paediatric first aid certification. Refresh due ${fmt(refresh.toISOString())}.</p></div>
@@ -199,8 +198,8 @@ function renderTrack() {
   const done = trainees.filter(traineeDone).length;
   return `<div class="panel"><p class="eyebrow">Coordinator</p><h2>Training tracker</h2>
   <div class="stat-row"><div class="stat"><b>${trainees.length}</b><span>trainees</span></div><div class="stat"><b>${done}</b><span>fully complete</span></div><div class="stat"><b>${trainees.length - done}</b><span>in progress</span></div></div>
-  ${trainees.length ? `<div class="tbl"><table><thead><tr><th>Name</th><th>University</th>${C.modules.map((m, i) => `<th title="${esc(m.title)}">M${i + 1}</th>`).join("")}<th>Declaration</th><th>Last seen</th><th></th></tr></thead><tbody>
-  ${trainees.map(t => `<tr><td><b>${esc(t.name)}</b> ${traineeDone(t) ? `<span class="tag ok">Complete</span>` : ""}</td><td>${esc(t.uni)}</td>${C.modules.map(m => { const x = t.modules[m.id]; return `<td class="n" title="${x?.passed ? "Passed " + fmt(x.passedAt) + ", " + x.attempts + " attempt(s)" : x ? x.attempts + " attempt(s)" : ""}">${x?.passed ? `<span class="dot y"></span> ${x.best}` : x ? x.best : "–"}</td>`; }).join("")}<td class="n">${t.declaredAt ? fmt(t.declaredAt) : "–"}</td><td class="n">${fmt(t.lastSeenAt)}</td>
+  ${trainees.length ? `<div class="tbl"><table><thead><tr><th>Name</th>${C.modules.map((m, i) => `<th title="${esc(m.title)}">M${i + 1}</th>`).join("")}<th>Declaration</th><th>Last seen</th><th></th></tr></thead><tbody>
+  ${trainees.map(t => `<tr><td><b>${esc(t.name)}</b> ${traineeDone(t) ? `<span class="tag ok">Complete</span>` : ""}</td>${C.modules.map(m => { const x = t.modules[m.id]; return `<td class="n" title="${x?.passed ? "Passed " + fmt(x.passedAt) + ", " + x.attempts + " attempt(s)" : x ? x.attempts + " attempt(s)" : ""}">${x?.passed ? `<span class="dot y"></span> ${x.best}` : x ? x.best : "–"}</td>`; }).join("")}<td class="n">${t.declaredAt ? fmt(t.declaredAt) : "–"}</td><td class="n">${fmt(t.lastSeenAt)}</td>
   <td><div class="acts"><button class="link-btn" data-pin="${t.id}">Reset PIN</button><button class="link-btn danger" data-del="${t.id}">Remove</button></div></td></tr>`).join("")}</tbody></table></div>
   <div class="row"><button class="btn ghost" id="csv">Download CSV</button><button class="btn ghost" id="refresh">Refresh</button></div>`
     : `<p class="note">No trainees yet. Each person appears here as soon as they sign in for the first time.</p><div class="row"><button class="btn ghost" id="refresh">Refresh</button></div>`}
