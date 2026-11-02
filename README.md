@@ -1,6 +1,6 @@
 # RSS Childcare 101
 
-Induction training for Resourceful Staffing Support agency staff: nine modules on EYFS 2025,
+Induction training for Resourceful Staffing Support agency staff: nine modules on EYFS 2026,
 safeguarding and RSS expectations, with must-pass quizzes, a declaration and a certificate.
 
 - **Staff** sign in with the shared RSS training password, their full name and a 4-digit PIN they choose

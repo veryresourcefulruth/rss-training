@@ -54,7 +54,7 @@ async function loadTrainees() { try { trainees = await api("/api/admin/trainees"
 function renderLogin() {
   $("#app").innerHTML = `<div class="login"><form class="panel" id="loginForm">
     <p class="eyebrow">Staff sign-in</p><h2>Welcome to RSS</h2>
-    <p class="note">Nine short modules on EYFS 2025, safeguarding and working as RSS cover staff. Allow about 3 hours; you can stop and come back on any device.</p>
+    <p class="note">Nine short modules on EYFS 2026, safeguarding and working as RSS cover staff. Allow about 3 hours; you can stop and come back on any device.</p>
     <label class="fld" for="lpw">RSS training password<input type="password" id="lpw" autocomplete="current-password" required></label>
     <label class="fld" for="lname">Your full name (first name and surname)<input type="text" id="lname" autocomplete="name" required></label>
     <label class="fld" for="lpin">4-digit PIN<input type="password" id="lpin" class="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" required></label>
@@ -160,9 +160,9 @@ function renderCert() {
   const refresh = new Date(me.declaredAt); refresh.setFullYear(refresh.getFullYear() + 1);
   return `<div class="cert"><p class="eyebrow">Resourceful Staffing Support</p><h2>Certificate of completion</h2>
    <p>This confirms that</p><p class="name">${esc(me.name)}</p>
-   <p>has completed <b>RSS Childcare 101</b>, covering EYFS 2025 essentials, safeguarding and child protection, whistleblowing, intimate care, ratios, safer eating, emergencies and quality practice, passing all ${C.modules.length} assessed modules and signing the RSS practitioner declaration on <b>${fmt(me.declaredAt)}</b>.</p>
+   <p>has completed <b>RSS Childcare 101</b>, covering EYFS 2026 essentials, safeguarding and child protection, whistleblowing, intimate care, ratios, safer eating, emergencies and quality practice, passing all ${C.modules.length} assessed modules and signing the RSS practitioner declaration on <b>${fmt(me.declaredAt)}</b>.</p>
    <div class="tbl"><table><thead><tr><th>Module</th><th>Score</th><th>Passed</th></tr></thead><tbody>${C.modules.map((m, i) => { const r = me.modules[m.id]; return `<tr><td>${i + 1}. ${esc(m.title)}</td><td class="n">${r.best}%</td><td class="n">${fmt(r.passedAt)}</td></tr>`; }).join("")}</tbody></table></div>
-   <p class="note">Induction training only. Does not replace accredited safeguarding (EYFS 2025 Annex C) or paediatric first aid certification. Refresh due ${fmt(refresh.toISOString())}.</p></div>
+   <p class="note">Induction training only. Does not replace accredited safeguarding training (required under EYFS 2026) or paediatric first aid certification. Refresh due ${fmt(refresh.toISOString())}.</p></div>
    <div class="panel" style="margin-top:18px"><p style="margin:0"><b>Your result has been sent to RSS automatically.</b> <span class="note">You can print this page or save it as a PDF from your browser's menu for your own records.</span></p></div>`;
 }
 
