@@ -1,0 +1,3 @@
+{ "name": "rss-training", "private": true, "type": "module",
+  "scripts": { "dev": "wrangler dev", "deploy": "wrangler deploy", "migrate": "wrangler d1 migrations apply rss-training --remote" },
+  "devDependencies": { "wrangler": "4.155.0" } }

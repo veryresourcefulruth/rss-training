@@ -1,0 +1,21 @@
+name = "rss-training"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+preview_urls = false
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# Custom domain later, once the domain is on Cloudflare, e.g.:
+# [[routes]]
+# pattern = "training.resourcefulruth.co.uk"
+# custom_domain = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "rss-training"
+database_id = "2c617dc3-ff95-4c6c-abc4-dd0e04fe02a1"
+migrations_dir = "migrations"
