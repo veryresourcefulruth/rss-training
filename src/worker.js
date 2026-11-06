@@ -276,13 +276,25 @@ async function api(req, env, url) {
   return fail(404, "Not found");
 }
 
+// Childcare 101 has moved into the RSS Hub (Training tab). This site now only points people there.
+// The training database stays: the Hub reads it once to carry over each person's earlier results.
+const HUB = "https://rss-hub.ruth-d53.workers.dev/#training";
+const MOVED = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Childcare 101 has moved</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.png">
+<meta http-equiv="refresh" content="6;url=${HUB}"></head>
+<body style="margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#F4F6F3;color:#1B2A33;display:grid;place-items:center;min-height:100vh;padding:24px;box-sizing:border-box">
+<main style="max-width:460px;background:#fff;border:1px solid #D9E0DD;border-radius:16px;padding:28px;text-align:center">
+<img src="/rss-logo.png" alt="Resourceful Staffing Support" width="88" height="86">
+<h1 style="font-size:1.5rem;margin:12px 0 8px">Childcare 101 has moved</h1>
+<p style="line-height:1.55;color:#5A6A72">The training is now inside the <b style="color:#1B2A33">RSS Hub</b>, under <b style="color:#1B2A33">Training</b>. Sign in with your email code, the same way you do for shifts. Your earlier results have been carried over.</p>
+<p><a href="${HUB}" style="display:inline-block;background:#2C58C9;color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:10px">Open the RSS Hub</a></p>
+<p style="font-size:.85rem;color:#5A6A72">Taking you there in a few seconds… If you added this app to your home screen, you can remove it and add the RSS Hub instead.</p>
+</main></body></html>`;
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
-    if (url.pathname.startsWith("/api/")) {
-      try { return await api(req, env, url); }
-      catch (e) { console.error(e); return fail(500, "Something went wrong on the server. Try again in a moment."); }
-    }
-    return env.ASSETS.fetch(req);
+    if (url.pathname.startsWith("/api/")) return fail(410, "Childcare 101 has moved into the RSS Hub. Open " + HUB);
+    if (/\.(png|ico)$/.test(url.pathname)) return env.ASSETS.fetch(req);
+    return new Response(MOVED, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
   },
 };
